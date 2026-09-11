@@ -1,0 +1,84 @@
+/*
+ * Site theme for the reel.
+ *
+ * atom-reel.css is vendored verbatim so it can be re-synced from the
+ * standalone widget; every colour and the font in it are custom properties, so
+ * matching the rest of the site is this one rule and nothing else.
+ */
+.ar-root {
+  /* The same cyan-to-indigo pair the headings on /home use. */
+  --ar-accent: #00bfff;
+  --ar-accent-2: #6c63ff;
+  /* Poppins, via the next/font variable set on <html> in layout.tsx. The
+     global `* { font-family: Poppins }` rule would win over the widget's own
+     font anyway; this makes it deliberate rather than accidental. */
+  --ar-font: var(--font-poppins), "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * `ar-framed` — for dropping the reel into a sized container rather than
+ * giving it the whole viewport, which is how the "OUR GLIMPSES" section on
+ * /home uses it.
+ *
+ * Sizing is the whole job here. The widget assumes it owns the screen, so its
+ * HUD is measured in `vw`, `svh` and viewport media queries. Inside a box that
+ * is 270px tall on a phone and 600px on a desktop those units bear no relation
+ * to the space available, and the caption stack runs straight over the badge.
+ * A size container on the frame lets everything below be measured in `cqh`/
+ * `cqw` instead, so the reel reads the same at 1150x600 as it does at 358x268.
+ */
+.ar-root.ar-framed,
+.ar-root.ar-framed .ar-stage,
+.ar-root.ar-framed .ar-frame {
+  height: 100%;
+}
+
+.ar-root.ar-framed .ar-frame {
+  container-type: size;
+  /* The cinemascope bars are set from JS as a slice of the viewport. As a
+     percentage they become a slice of the frame, which is what they were
+     always meant to be; `top`/`bottom` percentages resolve against the same
+     box, so the HUD and caption stay pinned just inside them. !important is
+     what it takes to beat the engine's inline value. */
+  --ar-bar: 6.2% !important;
+}
+
+.ar-root.ar-framed .ar-hud,
+.ar-root.ar-framed .ar-caption {
+  padding-inline: clamp(0.85rem, 3cqw, 2.5rem);
+}
+.ar-root.ar-framed .ar-hud {
+  top: calc(var(--ar-bar) + clamp(0.55rem, 2.6cqh, 1rem));
+}
+.ar-root.ar-framed .ar-badge {
+  padding: clamp(0.3rem, 1.4cqh, 0.5rem) clamp(0.45rem, 1.6cqw, 0.75rem);
+}
+.ar-root.ar-framed .ar-badge strong,
+.ar-root.ar-framed .ar-badge span,
+.ar-root.ar-framed .ar-kicker,
+.ar-root.ar-framed .ar-tag,
+.ar-root.ar-framed .ar-chapter-label,
+.ar-root.ar-framed .ar-counter-of {
+  font-size: clamp(0.5rem, 1.7cqh, 0.68rem);
+}
+
+.ar-root.ar-framed .ar-caption {
+  bottom: calc(var(--ar-bar) + clamp(1.1rem, 5cqh, 3rem));
+}
+.ar-root.ar-framed .ar-title {
+  font-size: clamp(1.05rem, 8.5cqh, 4.4rem);
+  margin-top: clamp(0.3rem, 1.8cqh, 0.7rem);
+}
+.ar-root.ar-framed .ar-line {
+  font-size: clamp(0.68rem, 2.6cqh, 1rem);
+  margin-top: clamp(0.3rem, 2cqh, 0.75rem);
+}
+.ar-root.ar-framed .ar-tags {
+  margin-top: clamp(0.45rem, 3cqh, 1.15rem);
+}
+.ar-root.ar-framed .ar-tag {
+  padding: clamp(0.18rem, 0.9cqh, 0.3rem) clamp(0.45rem, 1.7cqw, 0.8rem);
+}
+.ar-root.ar-framed .ar-counter-num {
+  font-size: clamp(2rem, 14cqh, 6.5rem);
+}
