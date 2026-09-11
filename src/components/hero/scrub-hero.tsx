@@ -36,14 +36,20 @@ export default function ScrubHero() {
     // unreliable on mobile browsers, and a 7.5 MB fetch on mobile data to
     // show a background is not a trade worth making.
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const wide = window.matchMedia("(min-width: 900px)");
-    const sync = () => setScrub(!motion.matches && wide.matches);
+    // Ask what kind of input the device has, not how wide the window is. A
+    // laptop with a half-width window is still a desktop; a 900px tablet is
+    // not. The old min-width:900px gate silently dropped real desktops into
+    // the still-frame fallback.
+    const desktop = window.matchMedia(
+      "(hover: hover) and (pointer: fine) and (min-width: 700px)"
+    );
+    const sync = () => setScrub(!motion.matches && desktop.matches);
     sync();
     motion.addEventListener("change", sync);
-    wide.addEventListener("change", sync);
+    desktop.addEventListener("change", sync);
     return () => {
       motion.removeEventListener("change", sync);
-      wide.removeEventListener("change", sync);
+      desktop.removeEventListener("change", sync);
     };
   }, []);
 
@@ -111,14 +117,12 @@ export default function ScrubHero() {
         <div aria-hidden className="hero-bar pointer-events-none absolute inset-x-0 top-0 z-10 bg-[#010516]" />
         <div aria-hidden className="hero-bar pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-[#010516]" />
 
-        {scrub && (
-          <div className="scrub-hud" aria-hidden>
-            <span ref={chapter}>CH 01 · WELCOME</span>
-            <span>
-              <b>REC</b> <span ref={timecode}>00:00:00</span>
-            </span>
-          </div>
-        )}
+        <div className="scrub-hud" aria-hidden>
+          <span ref={chapter}>CH 01 · WELCOME</span>
+          <span>
+            <b>REC</b> <span ref={timecode}>00:00:00</span>
+          </span>
+        </div>
 
         <div className="bands">
           {scrub ? (
@@ -151,12 +155,16 @@ export default function ScrubHero() {
               </article>
             </>
           ) : (
-            /* One frame, one message — the reduced-motion and no-video hero. */
+            /* The still. Reduced motion and touch devices land here, so it
+               keeps the grade, the grain, the bars and the readout — none of
+               which move — and only gives up the scrubbing. */
             <article className="band" data-static-show>
               <p className="band-kicker">Robotics Society of MAIT</p>
+              <span className="band-rule" aria-hidden />
               <h1 className="band-title">Welcome to A.T.O.M Robotics</h1>
               <p className="band-line">
-                Innovate. Create. Automate. A robotics community based out of Delhi.
+                Innovate. Create. Automate. Arms, hexapods, line followers and
+                CNC, built from scratch by students in the lab at MAIT.
               </p>
               {actions}
             </article>

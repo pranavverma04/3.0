@@ -141,6 +141,7 @@
 /* ---- the static hero, for reduced motion and for no-video ---- */
 .scrub-hero[data-static="1"] { height: 100svh !important; }
 .scrub-hero[data-static="1"] .band { opacity: 1; transform: none; }
+.scrub-hero[data-static="1"] .band-rule { transform: scaleX(1); }
 .scrub-hero[data-static="1"] .band[data-a]:not([data-static-show]) { display: none; }
 
 /* ==================================================================
