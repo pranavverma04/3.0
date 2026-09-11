@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { scrambleTo } from "./text-fx";
 
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const smoothstep = (x: number, a: number, b: number) => {
@@ -55,6 +56,11 @@ export function useScrub(refs: Refs, { enabled }: { enabled: boolean }) {
     let onScreen = true;
     let seekBusy = false;
     let pending: number | null = null;
+    // How fast the footage is being dragged, 0..1. Drives the film treatment:
+    // fast scrubbing smears and splits, the way a real transport does.
+    let velocity = 0;
+    let cancelScramble: (() => void) | null = null;
+    let activeBand = -1;
     let objectUrl: string | null = null;
     let dead = false;
 
@@ -107,7 +113,26 @@ export function useScrub(refs: Refs, { enabled }: { enabled: boolean }) {
       const ch = CHAPTERS[Math.min(CHAPTERS.length - 1, idx)];
       if (ch !== lastChapter && refs.chapter.current) {
         lastChapter = ch;
-        refs.chapter.current.textContent = ch;
+        // Decode rather than swap: the label is a readout, so it should
+        // resolve like one.
+        cancelScramble?.();
+        cancelScramble = scrambleTo(refs.chapter.current, ch, 520);
+      }
+
+      // Re-run each band's own entrance when it becomes the live one, so the
+      // words mask up again on the way back as well as the way in.
+      if (idx !== activeBand) {
+        activeBand = idx;
+        const el = bands[idx]?.el;
+        if (el) {
+          el.classList.remove("band-in");
+          void el.offsetWidth; // restart the CSS animation
+          el.classList.add("band-in");
+          const title = el.querySelector<HTMLElement>("[data-scramble]");
+          if (title && title.dataset.text) {
+            scrambleTo(title, title.dataset.text, 620);
+          }
+        }
       }
       if (refs.timecode.current && video.duration) {
         const t = p * video.duration;
@@ -122,9 +147,17 @@ export function useScrub(refs: Refs, { enabled }: { enabled: boolean }) {
       const dt = Math.min(100, now - (lastTick || now));
       lastTick = now;
       // Frame-rate independent easing: the same feel at 60Hz and 120Hz.
+      const prev = shown;
       shown += (target - shown) * (1 - Math.pow(1 - 0.16, dt / 16.667));
-      if (Math.abs(target - shown) < 0.0004) {
+      // Per-second rate of travel through the clip, normalised and smoothed so
+      // the treatment eases off instead of snapping back.
+      const rate = Math.abs(shown - prev) / Math.max(dt, 1) * 1000;
+      velocity += (Math.min(1, rate / 1.35) - velocity) * 0.2;
+      stage.style.setProperty("--vel", velocity.toFixed(3));
+      if (Math.abs(target - shown) < 0.0004 && velocity < 0.004) {
         shown = target;
+        velocity = 0;
+        stage.style.setProperty("--vel", "0");
         raf = null;
         lastTick = 0;
       } else {
@@ -180,6 +213,7 @@ export function useScrub(refs: Refs, { enabled }: { enabled: boolean }) {
 
     return () => {
       dead = true;
+      cancelScramble?.();
       if (raf) cancelAnimationFrame(raf);
       io.disconnect();
       window.removeEventListener("scroll", onScroll);

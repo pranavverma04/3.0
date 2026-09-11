@@ -142,3 +142,130 @@
 .scrub-hero[data-static="1"] { height: 100svh !important; }
 .scrub-hero[data-static="1"] .band { opacity: 1; transform: none; }
 .scrub-hero[data-static="1"] .band[data-a]:not([data-static-show]) { display: none; }
+
+/* ==================================================================
+   Film treatment
+   ------------------------------------------------------------------
+   --vel is written by the scrub engine every frame: 0 when the footage
+   is still, 1 when it is being dragged hard. Everything below hangs
+   off it, so the picture reacts to the hand on the transport instead
+   of running an animation on a timer.
+   ================================================================== */
+
+.scrub-stage { --vel: 0; }
+
+/* Motion smear while scrubbing fast. */
+.scrub-stage[data-ready="1"] .scrub-video {
+  filter: blur(calc(var(--vel) * 5px)) saturate(calc(1 + var(--vel) * 0.35));
+  transform: scale(calc(1.04 + var(--vel) * 0.02));
+}
+
+/* Grain. One tiled SVG noise field at low opacity — the thing that stops a
+   dark gradient reading as flat digital black. Lifts as the transport moves. */
+.fx-grain {
+  position: absolute;
+  inset: -50%;
+  z-index: 7;
+  pointer-events: none;
+  opacity: calc(0.15 + var(--vel) * 0.16);
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/>\
+<feColorMatrix type='saturate' values='0'/></filter>\
+<rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  background-size: 180px 180px;
+  mix-blend-mode: overlay;
+  animation: grain-shift 700ms steps(1) infinite;
+}
+@keyframes grain-shift {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-3%, 2%); }
+  50%  { transform: translate(2%, -3%); }
+  75%  { transform: translate(-2%, -2%); }
+  100% { transform: translate(3%, 1%); }
+}
+
+/* Scanlines. Almost invisible at rest; they bite as the speed comes up, which
+   is what sells "this is a transport, not a background". */
+.fx-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  opacity: calc(0.09 + var(--vel) * 0.16);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.42) 0px,
+    rgba(0, 0, 0, 0.42) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Chromatic split on the type, driven by the same velocity. Cheaper than
+   splitting the picture and it lands on the thing the eye is reading. */
+.band-title,
+.scrub-hud {
+  text-shadow:
+    calc(var(--vel) * -2.2px) 0 rgba(255, 0, 90, calc(var(--vel) * 0.7)),
+    calc(var(--vel) * 2.2px) 0 rgba(0, 191, 255, calc(var(--vel) * 0.7)),
+    0 2px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- word-by-word entrance (SplitText, by hand) ---- */
+.fx-clip {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+}
+.fx-word {
+  display: inline-block;
+  transform: translateY(105%);
+}
+.band-in .fx-word {
+  animation: fx-word-up 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+@keyframes fx-word-up {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+
+/* The kicker and body follow the words in. */
+.band-in .band-kicker { animation: fx-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both; }
+.band-in .band-line   { animation: fx-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 320ms both; }
+.band-in .band-cta    { animation: fx-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 460ms both; }
+@keyframes fx-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* A hairline that draws across under the kicker as its chapter lands —
+   a cut mark, and the thing that tells you a new chapter has started. */
+.band-rule {
+  display: block;
+  height: 1px;
+  margin: 1.1rem auto 0;
+  width: min(22rem, 62%);
+  background: linear-gradient(90deg, transparent, #00bfff, transparent);
+  transform: scaleX(0);
+}
+.band-in .band-rule {
+  animation: fx-rule 1100ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+}
+@keyframes fx-rule {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-grain { animation: none; opacity: 0.12; }
+  .fx-word { transform: none; }
+  .band-in .fx-word,
+  .band-in .band-kicker,
+  .band-in .band-line,
+  .band-in .band-cta { animation: none; opacity: 1; transform: none; }
+  .band-rule { transform: scaleX(1); }
+  .scrub-stage[data-ready="1"] .scrub-video { filter: none; }
+}

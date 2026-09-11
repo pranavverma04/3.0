@@ -3,6 +3,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { Poppins } from "next/font/google";
+import Marquee from "@/components/hero/marquee";
 import ScrubHero from "@/components/hero/scrub-hero";
 import AtomReel from "@/components/atom-reel";
 import MentorSpotlight from "@/components/mentor/mentor-spotlight";
@@ -43,6 +44,8 @@ const Home = () => {
       {/* ================================================= */}
 
       <ScrubHero />
+
+      <Marquee text="A.T.O.M Robotics" accent="MAIT" />
 
       {/* ================================================= */}
       {/* ================= OUR GLIMPSES ================== */}
