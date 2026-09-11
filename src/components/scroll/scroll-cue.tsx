@@ -13,9 +13,12 @@ export default function ScrollCue({
   targetId,
   label = "Scroll",
   className = "",
+  onActivate,
 }: {
   targetId: string;
   label?: string;
+  /** Overrides the jump — a scrubbed hero wants a nudge, not a skip. */
+  onActivate?: () => void;
   /** Positioning is the caller's business, so it can clear its own chrome. */
   className?: string;
 }) {
@@ -24,7 +27,7 @@ export default function ScrollCue({
   return (
     <button
       type="button"
-      onClick={() => scrollToId(targetId)}
+      onClick={() => (onActivate ? onActivate() : scrollToId(targetId))}
       aria-label={`Scroll to ${targetId.replace(/-/g, " ")}`}
       data-hidden={moved || undefined}
       className={`group flex flex-col items-center gap-2.5 rounded-full px-4 py-2 transition-[opacity,transform] duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00bfff] data-[hidden]:pointer-events-none data-[hidden]:translate-y-2 data-[hidden]:opacity-0 ${className}`}

@@ -4,11 +4,6 @@
  * under it. Everything is a delay on the same two keyframes, so the whole
  * timeline can be read off the class names.
  */
-@keyframes hero-rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: none; }
-}
-
 @keyframes hero-bar {
   from { height: 0; }
   to   { height: var(--hero-bar); }
@@ -21,30 +16,129 @@
 
 .hero-stage { --hero-bar: clamp(26px, 5svh, 54px); }
 
-.hero-video  { animation: hero-fade 1400ms ease-out both; }
 .hero-bar    { animation: hero-bar 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
-.hero-eyebrow{ animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both; }
-.hero-title  { animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 850ms both; }
-.hero-tagline{ animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1500ms both; }
-.hero-actions{ animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1800ms both; }
-.hero-cue    { animation: hero-fade 800ms ease-out 2300ms both; }
+/* `backwards`, not `both`: a filled-forwards animation keeps its end state
+   and outranks normal declarations, which meant the cue's own hide rule
+   could never dim it once the visitor started scrolling. */
+.hero-cue    { animation: hero-fade 800ms ease-out 2300ms backwards; }
 
 /* Someone who has asked for less motion gets the finished frame, at once. */
 @media (prefers-reduced-motion: reduce) {
-  .hero-video,
-  .hero-eyebrow,
-  .hero-title,
-  .hero-tagline,
-  .hero-actions,
   .hero-cue { animation: none; opacity: 1; transform: none; }
   .hero-bar { animation: none; height: var(--hero-bar); }
 }
 
-/* The typed line reserves its own height, so nothing below it jumps as the
-   characters land. */
-.hero-title .Typewriter { display: inline; }
-.hero-title .Typewriter__cursor {
-  color: #00bfff;
-  font-weight: 300;
-  margin-left: 0.06em;
+
+/* ==================================================================
+   Scroll-scrubbed hero
+   ------------------------------------------------------------------
+   The section is many viewports tall and its stage is sticky, so the
+   footage holds still on screen while the page scrolls past it. Scroll
+   position drives video.currentTime, and the caption bands cut in and
+   out over the top of it — the page plays rather than sits.
+   ================================================================== */
+
+.scrub-hero {
+  position: relative;
+  width: 100%;
+  background: #010516;
 }
+
+.scrub-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+  --hero-bar: clamp(26px, 5svh, 54px);
+}
+
+.scrub-video,
+.scrub-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+}
+
+/* Held back until the first frame has actually been decoded, so the
+   hero never flashes an empty black box. */
+.scrub-video { opacity: 0; transition: opacity 900ms ease-out; }
+.scrub-stage[data-ready="1"] .scrub-video { opacity: 0.88; }
+.scrub-stage[data-ready="1"] .scrub-poster { opacity: 0; }
+.scrub-poster { opacity: 0.88; transition: opacity 900ms ease-out; }
+
+/* ---- the readout across the top ---- */
+.scrub-hud {
+  position: absolute;
+  inset-inline: 0;
+  /* Along the bottom, where a camera puts its readout — and clear of the
+     logo and the nav, which own the two top corners. */
+  bottom: calc(var(--hero-bar) + 1.1rem);
+  z-index: 6;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+.scrub-hud b { color: #00bfff; font-weight: 600; }
+
+/* ---- the caption bands ---- */
+.bands {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding-inline: 1.25rem;
+}
+.band {
+  grid-area: 1 / 1;
+  width: min(62rem, 100%);
+  text-align: center;
+  opacity: 0;
+  /* --k runs 0 to 1 across the band's own entrance, so the type settles
+     into place rather than simply appearing. */
+  transform: translateY(calc((1 - var(--k, 0)) * 22px));
+  will-change: opacity, transform;
+}
+.band[data-locked] { pointer-events: none; }
+
+.band-kicker {
+  margin: 0;
+  font-size: clamp(10px, 1.1vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #00bfff;
+}
+.band-title {
+  margin: 0.9rem 0 0;
+  font-size: clamp(2rem, 6.2vw, 4.9rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: #fff;
+  text-wrap: balance;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.6);
+}
+.band-line {
+  margin: 1.1rem auto 0;
+  max-width: 44ch;
+  font-size: clamp(0.95rem, 1.9vw, 1.3rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+/* ---- the static hero, for reduced motion and for no-video ---- */
+.scrub-hero[data-static="1"] { height: 100svh !important; }
+.scrub-hero[data-static="1"] .band { opacity: 1; transform: none; }
+.scrub-hero[data-static="1"] .band[data-a]:not([data-static-show]) { display: none; }
