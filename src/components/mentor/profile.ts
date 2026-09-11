@@ -44,6 +44,8 @@ export const profile = {
   university: "Guru Gobind Singh Indraprastha University",
   campus: "Sector 22, Rohini, New Delhi 110085",
   labRole: "Co-founder and Coordinator, A.T.O.M Robotics Lab",
+  /** Shown on the home page card, where the shorter title is the one used. */
+  labRoleShort: "Coordinator, A.T.O.M Robotics Lab",
   email: "vaibhavnijhawan@mait.ac.in",
   linktree: "https://linktr.ee/a.t.o.m_robotics_lab",
 

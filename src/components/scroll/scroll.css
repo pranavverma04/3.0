@@ -1,0 +1,6 @@
+/* The travelling fill inside the hero scroll cue. */
+@keyframes cue {
+  0%   { transform: translateY(-100%); }
+  60%  { transform: translateY(100%); }
+  100% { transform: translateY(100%); }
+}

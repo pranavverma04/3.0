@@ -11,7 +11,7 @@ import { profile } from "./profile";
  * It carries only enough to make someone want to click — the full record lives
  * at /mentors/vaibhav-nijhawan.
  */
-export default function MentorSpotlight() {
+export default function MentorSpotlight({ id }: { id?: string }) {
   const facts: [string, string][] = [
     [profile.counts.teaching, "teaching"],
     [String(profile.counts.publications), "papers published"],
@@ -20,6 +20,7 @@ export default function MentorSpotlight() {
 
   return (
     <section
+      id={id}
       aria-labelledby="mentor-heading"
       className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#00111f_0%,#010516_100%)] px-4 py-[70px] sm:px-8 sm:py-[90px] md:px-14 md:py-[110px]"
     >
@@ -55,7 +56,7 @@ export default function MentorSpotlight() {
               {profile.institute}
             </p>
             <p className="mt-3 text-[15px] font-medium text-[#00bfff]">
-              {profile.labRole}
+              {profile.labRoleShort}
             </p>
 
             <p className="mt-6 max-w-[46ch] text-[15px] leading-[1.75] text-white/70">

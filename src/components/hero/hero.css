@@ -1,0 +1,50 @@
+/*
+ * The hero's entrance — one orchestrated sequence on load rather than effects
+ * scattered through the page. Bars close in, the title types, the rest settles
+ * under it. Everything is a delay on the same two keyframes, so the whole
+ * timeline can be read off the class names.
+ */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes hero-bar {
+  from { height: 0; }
+  to   { height: var(--hero-bar); }
+}
+
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.hero-stage { --hero-bar: clamp(26px, 5svh, 54px); }
+
+.hero-video  { animation: hero-fade 1400ms ease-out both; }
+.hero-bar    { animation: hero-bar 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.hero-eyebrow{ animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both; }
+.hero-title  { animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 850ms both; }
+.hero-tagline{ animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1500ms both; }
+.hero-actions{ animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1800ms both; }
+.hero-cue    { animation: hero-fade 800ms ease-out 2300ms both; }
+
+/* Someone who has asked for less motion gets the finished frame, at once. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video,
+  .hero-eyebrow,
+  .hero-title,
+  .hero-tagline,
+  .hero-actions,
+  .hero-cue { animation: none; opacity: 1; transform: none; }
+  .hero-bar { animation: none; height: var(--hero-bar); }
+}
+
+/* The typed line reserves its own height, so nothing below it jumps as the
+   characters land. */
+.hero-title .Typewriter { display: inline; }
+.hero-title .Typewriter__cursor {
+  color: #00bfff;
+  font-weight: 300;
+  margin-left: 0.06em;
+}
