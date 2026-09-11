@@ -5,6 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import ReactPlayer from "react-player";
 import { Poppins } from "next/font/google";
 import AtomReel from "@/components/atom-reel";
+import MentorSpotlight from "@/components/mentor/mentor-spotlight";
 import Typewriter from "typewriter-effect";
 
 const poppins = Poppins({
@@ -410,6 +411,12 @@ const Home = () => {
           Hover the frame &middot; chapters on the right &middot; arrow keys
         </Typography>
       </Box>
+
+      {/* ================================================= */}
+      {/* ================ FACULTY MENTOR ================= */}
+      {/* ================================================= */}
+
+      <MentorSpotlight />
 
       {/* ================================================= */}
       {/* EXISTING ANIMATION STYLES */}
