@@ -25,6 +25,7 @@ const navItems = [
   { label: "Blogs", href: "/blogs" },
   { label: "Achievements", href: "/achievements" },
   { label: "Projects", href: "/projects" },
+  { label: "MAIT", href: "https://mait.ac.in/" },
 ];
 
 const Navbar = () => {
@@ -170,8 +171,8 @@ const Navbar = () => {
             boxSizing: "border-box",
             width: "100%",
             height: "auto",
-            backgroundColor: "#1976d2", // Set drawer background color to blue
-            color: "white", // Ensure text is visible against the blue background
+            backgroundColor: "#1976d2",
+            color: "white",
           },
         }}
         anchor="top"
