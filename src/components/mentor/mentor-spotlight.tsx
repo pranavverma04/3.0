@@ -41,6 +41,9 @@ export default function MentorSpotlight({ id }: { id?: string }) {
         <div className="mt-10 flex flex-col gap-8 sm:mt-14 sm:flex-row sm:items-start sm:gap-10 md:gap-14">
           <div className="w-[180px] shrink-0 sm:w-[230px] md:w-[260px]">
             <Portrait
+              photo="/mentors/vaibhav-nijhawan-home"
+              widths={[400, 534]}
+              aspect={600 / 534}
               sizes="(max-width: 640px) 180px, (max-width: 768px) 230px, 260px"
               className="aspect-[4/5] w-full rounded-2xl border border-white/10 object-cover object-center"
             />

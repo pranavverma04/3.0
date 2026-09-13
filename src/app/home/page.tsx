@@ -3,8 +3,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { Poppins } from "next/font/google";
-import Marquee from "@/components/hero/marquee";
-import ScrubHero from "@/components/hero/scrub-hero";
+import AtomHero from "@/components/hero/atom-hero";
 import AtomReel from "@/components/atom-reel";
 import MentorSpotlight from "@/components/mentor/mentor-spotlight";
 import ScrollProgress from "@/components/scroll/scroll-progress";
@@ -24,10 +23,7 @@ const Home = () => {
       sx={{
         position: "relative",
         width: "100%",
-        // `clip` and not `hidden`: hidden makes this a scroll container, which
-        // stops the scrubbed hero's sticky stage pinning. clip cuts the same
-        // overflow without that side effect.
-        overflow: "clip",
+        overflow: "hidden",
         backgroundColor: "#000",
       }}
     >
@@ -43,9 +39,7 @@ const Home = () => {
       {/* ================= HERO SECTION ================== */}
       {/* ================================================= */}
 
-      <ScrubHero />
-
-      <Marquee text="A.T.O.M Robotics" accent="MAIT" />
+      <AtomHero scrollTargetId="glimpses" />
 
       {/* ================================================= */}
       {/* ================= OUR GLIMPSES ================== */}
