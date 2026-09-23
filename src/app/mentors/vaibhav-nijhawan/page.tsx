@@ -208,12 +208,15 @@ export default function MentorProfilePage() {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-[14px]">
-              <a
-                href={`mailto:${profile.email}`}
-                className="text-white/70 underline decoration-white/20 underline-offset-[5px] transition-colors hover:text-white hover:decoration-[#00bfff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00bfff]"
-              >
-                {profile.email}
-              </a>
+              {profile.emails.map((email) => (
+                <a
+                  key={email}
+                  href={`mailto:${email}`}
+                  className="text-white/70 underline decoration-white/20 underline-offset-[5px] transition-colors hover:text-white hover:decoration-[#00bfff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00bfff]"
+                >
+                  {email}
+                </a>
+              ))}
               <a
                 href={profile.linktree}
                 target="_blank"
@@ -232,7 +235,7 @@ export default function MentorProfilePage() {
               {profile.about.map((para) => (
                 <p
                   key={para.slice(0, 32)}
-                  className="max-w-[64ch] text-[15px] leading-[1.85] text-white/70"
+                  className="max-w-[64ch] text-justify text-[15px] leading-[1.85] text-white/70"
                 >
                   {para}
                 </p>
@@ -267,7 +270,6 @@ export default function MentorProfilePage() {
                   span={d.year}
                   title={`${d.award} — ${d.field}`}
                   meta={d.school}
-                  detail={d.result}
                   current={d.current}
                 />
               ))}
@@ -298,10 +300,6 @@ export default function MentorProfilePage() {
                 </div>
               ))}
             </div>
-          </Section>
-
-          <Section id="mait" title="At MAIT">
-            <Bullets items={profile.responsibilities} />
           </Section>
 
           <Section id="recognition" title="Recognition">

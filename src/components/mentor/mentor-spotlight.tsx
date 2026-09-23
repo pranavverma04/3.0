@@ -41,9 +41,6 @@ export default function MentorSpotlight({ id }: { id?: string }) {
         <div className="mt-10 flex flex-col gap-8 sm:mt-14 sm:flex-row sm:items-start sm:gap-10 md:gap-14">
           <div className="w-[180px] shrink-0 sm:w-[230px] md:w-[260px]">
             <Portrait
-              photo="/mentors/vaibhav-nijhawan-home"
-              widths={[400, 534]}
-              aspect={600 / 534}
               sizes="(max-width: 640px) 180px, (max-width: 768px) 230px, 260px"
               className="aspect-[4/5] w-full rounded-2xl border border-white/10 object-cover object-center"
             />
@@ -58,12 +55,20 @@ export default function MentorSpotlight({ id }: { id?: string }) {
               <br />
               {profile.institute}
             </p>
-            <p className="mt-3 text-[15px] font-medium text-[#00bfff]">
+            <Link
+              href="/about"
+              className="mt-3 inline-block text-[15px] font-medium text-[#00bfff] underline decoration-[#00bfff]/30 underline-offset-[5px] transition-colors hover:decoration-[#00bfff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00bfff]"
+            >
               {profile.labRoleShort}
-            </p>
+            </Link>
 
             <p className="mt-6 max-w-[46ch] text-[15px] leading-[1.75] text-white/70">
-              {profile.short}
+              <strong className="font-semibold text-white">{profile.since.lead}</strong>
+              {profile.since.rest}
+            </p>
+            <p className="mt-3 max-w-[46ch] text-justify text-[15px] leading-[1.75] text-white/70">
+              <strong className="font-semibold text-white">{profile.specialization.lead}</strong>
+              {profile.specialization.rest}
             </p>
 
             <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-4">

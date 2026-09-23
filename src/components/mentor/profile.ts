@@ -3,9 +3,10 @@
  *
  * Compiled from the CV and publication list he supplied. Personal details that
  * appear on a CV but do not belong on a public web page were deliberately left
- * out: date of birth, father's name, home address, personal mobile number,
- * personal email, and membership account numbers. Everything here is either a
- * professional fact or a public academic identifier meant to be looked up.
+ * out: date of birth, father's name, home address, personal mobile number and
+ * membership account numbers. The email addresses are the ones he asked to
+ * list. Everything else is either a professional fact or a public academic
+ * identifier meant to be looked up.
  */
 
 export type Appointment = {
@@ -22,7 +23,6 @@ export type Degree = {
   field: string;
   school: string;
   year: string;
-  result: string;
   current?: boolean;
 };
 
@@ -38,7 +38,7 @@ export type Identifier = { label: string; value: string; href?: string };
 
 export const profile = {
   name: "Vaibhav Nijhawan",
-  role: "Assistant Professor (Grade-I)",
+  role: "Assistant Professor",
   department: "Electronics & Communication Engineering",
   institute: "Maharaja Agrasen Institute of Technology",
   university: "Guru Gobind Singh Indraprastha University",
@@ -46,16 +46,20 @@ export const profile = {
   labRole: "Co-founder and Coordinator, A.T.O.M Robotics Lab",
   /** Shown on the home page card, where the shorter title is the one used. */
   labRoleShort: "Coordinator, A.T.O.M Robotics Lab",
-  email: "vaibhavnijhawan@mait.ac.in",
+  /** Contact addresses shown on the profile page, in this order. */
+  emails: ["vaibh99@gmail.com", "vaibh99@zohomail.com"],
   linktree: "https://linktr.ee/a.t.o.m_robotics_lab",
 
   /** Portrait, minus the size suffix and extension. See public/mentors/. */
   photo: "/mentors/vaibhav-nijhawan",
   photoAlt: "Portrait of Vaibhav Nijhawan",
 
-  /** Two sentences for the homepage card. */
-  short:
-    "He has taught electronics at MAIT since 2014 and co-founded the A.T.O.M Robotics Lab. His work runs from CMOS device design and low-power ADCs up to the embedded, IoT and computer-vision systems students build in the lab.",
+  /** The two lines on the homepage card, worded as he supplied them; the lead of each is set bold. */
+  since: { lead: "Since 01.08.2014 onwards", rest: " at MAIT" },
+  specialization: {
+    lead: "Specialization:",
+    rest: " Logic CMOS Device Design and Characterization, Compact device modeling, VLSI Digital circuit designing viz. ADC, Embedded System Design, IoT applications, Computer Vision, ML. (ATOM Robotics Lab)",
+  },
 
   /** The longer read, on the profile page. */
   about: [
@@ -103,13 +107,6 @@ export const profile = {
       from: "Aug 2013",
       to: "Jan 2014",
     },
-    {
-      role: "Lecturer",
-      place: "Mahaveer Swami Institute of Technology",
-      where: "Sonepat, Haryana",
-      from: "Jul 2010",
-      to: "Jun 2011",
-    },
   ] satisfies Appointment[],
 
   education: [
@@ -118,7 +115,6 @@ export const profile = {
       field: "Electronics & Communication Engineering",
       school: "Delhi Technological University",
       year: "Pursuing",
-      result: "9.2 SGPA in coursework",
       current: true,
     },
     {
@@ -126,28 +122,15 @@ export const profile = {
       field: "VLSI & Embedded Systems",
       school: "Delhi Technological University",
       year: "2013",
-      result: "8.6 CGPA",
     },
     {
       award: "B.Tech",
       field: "Electronics & Communication Engineering",
       school: "GPMCE, Guru Gobind Singh Indraprastha University",
       year: "2010",
-      result: "82.19%",
     },
   ] satisfies Degree[],
 
-  /** Departmental responsibilities at MAIT. */
-  responsibilities: [
-    "Student counsellor",
-    "Lab in-charge, Electronic Instrumentation & Measurement",
-    "Subject coordinator — ETEC-207, ETCS-302, ECE-308T, ML-411",
-    "Attendance compilation coordinator",
-    "Marks compilation coordinator",
-    "Internal OMR coordinator",
-    "Registration chart coordinator",
-    "University paper setter",
-  ],
 
   recognition: [
     "Award of appreciation at MAIT for authoring research papers, 2021 through 2024",

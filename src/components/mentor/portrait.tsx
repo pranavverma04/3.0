@@ -2,7 +2,7 @@ import React from "react";
 import { profile } from "./profile";
 
 /**
- * The mentor's portrait, served as WebP with a JPEG fallback at three widths.
+ * The mentor's portrait, served as WebP with a JPEG fallback at two widths.
  * Plain <picture> rather than next/image: the sizes are fixed by the layout, so
  * there is nothing for the optimiser to decide, and this keeps the page static.
  */
@@ -11,8 +11,8 @@ export default function Portrait({
   className = "",
   priority = false,
   photo = profile.photo,
-  widths = [400, 800, 1254],
-  aspect = 1,
+  widths = [400, 534],
+  aspect = 600 / 534,
 }: {
   /** The `sizes` attribute — what width the image occupies at each breakpoint. */
   sizes: string;
